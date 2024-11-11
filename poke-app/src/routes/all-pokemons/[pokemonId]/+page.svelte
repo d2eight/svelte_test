@@ -1,46 +1,32 @@
 <script lang="ts">
-    import "../../../app.css"
-    import {page} from "$app/stores";
-    import {onMount} from "svelte";
-    import PokemonCard from "../../../components/PokemonCard.svelte";
-    import type {Pokemon} from "../../../types/types";
 
-    const name: string = $state($page.params.pokemonId);
+    const { data } = $props();
 
-    let pokemonRequest: any = $state();
-
-    async function fetchPokemon(): Promise<void> {
-        try {
-            const pokemonInfo = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-            return await pokemonInfo.json();
-        } catch (error) {
-
+    const processStatColor = (statMark: number) => {
+        if (statMark <= 85) {
+            return '#D2222D'
+        } else if (statMark <= 170) {
+            return '#FFBF00'
+        } else if (statMark <= 260) {
+            return '#238823'
         }
     }
-
-    onMount (() => {
-        pokemonRequest = fetchPokemon();
-        async function getPokemonData (): Promise<any> {
-            console.log(await pokemonRequest);
-        }
-        getPokemonData();
-    })
-
 
 </script>
 
 <div class="pokemon_container">
     <div class="pokemon_content">
-        {#await pokemonRequest}
-            <p>...fetching</p>
-        {:then pokemonData}
-            <img class="pokemon_content_img" src={pokemonData.sprites.other.showdown.front_default} alt={pokemonData.name}>
-            <div class="pokemon_content_stats">
-                <h2 class="pokemon_title">{pokemonData.name}</h2>
-            </div>
-        {:catch error}
-            <p>{error}</p>
-        {/await}
+        {#if data}
+            <img src={data.gif} alt="" class="pokemon_content_img" />
+            <ul class="pokemon_content_stats">
+                {#each data.stats as stat}
+                    <li class="pokemon_content_stat_item">
+                        <span class="pokemon_content_stat_name">{stat.stat.name}</span>
+                        <span class="pokemon_content_stat_mark" style={`color: ${processStatColor(stat.base_stat)}`}>{stat.base_stat}</span>
+                    </li>
+                {/each}
+            </ul>
+        {/if}
     </div>
 </div>
 
@@ -53,6 +39,8 @@
 
     .pokemon_content {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
         gap: 80px;
         background: antiquewhite;
         border: 4px solid chocolate;
@@ -63,5 +51,21 @@
     .pokemon_content .pokemon_content_img {
         width: 250px;
         height: auto;
+    }
+
+    .pokemon_content_stats {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pokemon_content_stat_item {
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+    }
+
+    .pokemon_content_stat_item span {
+        font-size: 25px;
     }
 </style>
