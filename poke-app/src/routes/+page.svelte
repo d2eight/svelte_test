@@ -1,13 +1,14 @@
 <script>
     import "../app.css"
+    import Pagination from '../components/Pagination.svelte';
 
     const homeButtonsArray = [
         {
-            rote: "/all-pokemons",
+            route: "/all-pokemons?page=1",
             label: "All Pokemons"
         },
         {
-            rote: "/find-pokemon",
+            route: "/find-pokemon",
             label: "Find pokemon"
         }
     ]
@@ -21,7 +22,7 @@
         <ul class="home-page-buttons">
             {#each homeButtonsArray as button}
                 <li>
-                    <a href={button.rote}>{button.label}</a>
+                    <a href={button.route}>{button.label}</a>
                 </li>
             {/each}
         </ul>

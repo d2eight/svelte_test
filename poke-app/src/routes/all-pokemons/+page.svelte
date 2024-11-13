@@ -1,37 +1,32 @@
 <script lang="ts">
     import PokemonCard from "../../components/PokemonCard.svelte";
+    import Pagination from "../../components/Pagination.svelte";
+    import { ProgressRing } from '@skeletonlabs/skeleton-svelte';
 
     const { data } = $props();
 
 </script>
 
-<div class="pokemon_cards">
-    {#if data}
-        <ul class="pokemon_cards_list">
-            {#each data.response as pokemon}
+<div class="h-[100vh] relative max-w-[1200px] p-[50px] m-auto">
+    {#await data.pokemonsData}
+        <div class="absolute top-[50%] right-[50%] translate-x-[50%]">
+            <ProgressRing value={null} size="size-14" meterStroke="stroke-warning-600"/>
+        </div>
+    {:then pokemonsData}
+        <ul class="flex flex-wrap justify-center gap-[50px]">
+            {#each pokemonsData.pokemons as pokemon}
                 <li>
-                    <a href={`/all-pokemons/${pokemon.name}`}>
-                        <PokemonCard name={pokemon.name} image={pokemon.image}/>
+                    <a class="" href={`/all-pokemons/${pokemon.name}`} data-sveltekit-preload-data="tap">
+                        <PokemonCard name={pokemon.name} image={pokemon.image} pokemonTypes={pokemon.types} />
                     </a>
                 </li>
             {/each}
         </ul>
-    {:else}
-    <p>Loading...</p>
-    {/if}
+    {:catch error}
+        <p>Failed</p>
+    {/await}
+    <div class="absolute bottom-[20px] right-[50%] translate-x-[50%]">
+        <Pagination />
+    </div>
 </div>
 
-<style>
-    .pokemon_cards {
-        padding: 20px 0;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .pokemon_cards_list {
-        display: flex;
-        justify-content: space-around;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-</style>

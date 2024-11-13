@@ -1,4 +1,5 @@
 export type Pokemon = {
     name: string,
-    image: string
+    image: string,
+    pokemonTypes: []
 }
