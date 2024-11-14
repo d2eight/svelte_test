@@ -2,11 +2,6 @@ export async function load({url, fetch}) {
 
     const currentPage = Number(url.searchParams.get('page'));
 
-    const filterParams = {
-        sex: 'male',
-
-    }
-
     const offset: number = ((currentPage) - 1) * 9 || 0;
 
     async function getPokemons(offset: number) {
