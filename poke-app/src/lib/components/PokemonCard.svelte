@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { Pokemon } from "../types/types";
+    import type { PokemonCard } from "$lib/types/types";
     import PokemonTypeIcon from './PokemonTypeIcon.svelte';
 
-    import { pokemonTypesIcons } from '$lib/pokemonTypesIcons';
+    import { pokemonTypesIcons } from '$lib/data/pokemonTypesIcons';
 
-    const { name, image, pokemonTypes }:Pokemon = $props();
+    const { name, image, pokemonTypes }:PokemonCard = $props();
 
 </script>
 

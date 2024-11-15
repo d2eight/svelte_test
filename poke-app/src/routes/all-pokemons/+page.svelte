@@ -1,15 +1,15 @@
 <script lang="ts">
-    import PokemonCard from "../../components/PokemonCard.svelte";
-    import Pagination from "../../components/Pagination.svelte";
-    import Filter from "../../components/Filter.svelte";
+    import PokemonCard from "$lib/components/PokemonCard.svelte";
+    import Pagination from "$lib/components/Pagination.svelte";
+    import Filter from "$lib/components/Filter.svelte";
 
     import { ProgressRing } from '@skeletonlabs/skeleton-svelte';
 
     const { data } = $props();
 
 </script>
-<Filter />
 <div class="h-[100vh] relative max-w-[1200px] p-[50px] m-auto">
+    <Filter formData={data.form} />
     {#await data.pokemonsData}
         <div class="absolute top-[50%] right-[50%] translate-x-[50%]">
             <ProgressRing value={null} size="size-14" meterStroke="stroke-warning-600"/>
@@ -27,7 +27,7 @@
     {:catch error}
         <p>Failed</p>
     {/await}
-    <div class="absolute bottom-[20px] right-[50%] translate-x-[50%]">
+    <div class="">
         <Pagination />
     </div>
 </div>

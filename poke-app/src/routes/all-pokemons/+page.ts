@@ -1,4 +1,4 @@
-export async function load({url, fetch}) {
+export async function load({url, fetch, data}) {
 
     const currentPage = Number(url.searchParams.get('page'));
 
@@ -33,22 +33,12 @@ export async function load({url, fetch}) {
         return {
             count: allPokemonsData.count,
             pokemons: pokemonDetails,
-            types: getPokemonTypes()
         }
     }
-
-    async function getPokemonTypes() {
-        const allTypes = await fetch(`https://pokeapi.co/api/v2/type/`);
-
-        if (!allTypes.ok) {
-            throw new Error("Failed to load pokemons types");
-        }
-        return await allTypes.json();
-
-    }
-
 
     return {
-        pokemonsData: getPokemons(offset)
+        pokemonsData: getPokemons(offset),
+        form: data
     };
 }
+

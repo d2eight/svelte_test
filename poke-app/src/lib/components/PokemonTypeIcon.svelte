@@ -1,10 +1,10 @@
 <script lang="ts">
 
-		import type { PokemonTypeIconType } from '../types/types';
+		import type { PokemonIconData } from '$lib/types/types';
 
 		import { Tooltip } from '@skeletonlabs/skeleton-svelte';
 
-		const { name, icon, color } = $props();
+		const { name, icon, color }:PokemonIconData = $props();
 
 		let hoverStatus = $state(false);
 

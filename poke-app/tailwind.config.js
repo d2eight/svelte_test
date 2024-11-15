@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import forms from '@tailwindcss/forms';
 import { skeleton, contentPath } from '@skeletonlabs/skeleton/plugin';
 import * as themes from '@skeletonlabs/skeleton/themes';
 
@@ -11,8 +12,8 @@ export default {
     extend: {},
   },
   plugins: [
+    forms,
     skeleton({
-      // NOTE: each theme included will be added to your CSS bundle
       themes: [ themes.cerberus, themes.rose ]
     })
   ]

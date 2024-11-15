@@ -1,6 +1,6 @@
 <script>
     import "../app.css"
-    import Pagination from '../components/Pagination.svelte';
+    import Pagination from '$lib/components/Pagination.svelte';
 
     const homeButtonsArray = [
         {

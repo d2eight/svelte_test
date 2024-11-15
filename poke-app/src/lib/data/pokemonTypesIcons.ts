@@ -19,9 +19,7 @@ import {
 	Sparkles,
 } from 'lucide-svelte';
 
-import type { PokemonTypeIconType } from '../types/types';
-
-export const pokemonTypesIcons: Record<string, PokemonTypeIconType> = {
+export const pokemonTypesIcons = {
 	normal: {
 		icon: Smile,
 		color: '#000000'
