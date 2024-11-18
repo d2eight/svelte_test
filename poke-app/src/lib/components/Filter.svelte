@@ -4,14 +4,39 @@
 
 	import PokemonTypeIcon from './PokemonTypeIcon.svelte';
 
+	import { goto } from '$app/navigation';
+
 	const { formData } = $props();
 
-	const { form } = superForm(formData.form);
+	const { form, enhance } = superForm(formData.form, {
+		applyAction: true,
+		invalidateAll: true,
+		resetForm: true,
+		onResult({result}) {
+			if(result.type === "success") {
+				const requestedPokemonsTypes = [];
+
+				for (let key in result.data.form.data) {
+					if ((result.data.form.data[key])) {
+						requestedPokemonsTypes.push(key);
+					}
+				}
+				const searchParams = new URLSearchParams({
+					page: "1",
+					rofl: "2",
+					types: requestedPokemonsTypes.join(",")
+				});
+
+				goto(`/all-pokemons?${searchParams.toString()}`);
+
+			}
+		}
+	});
 
 </script>
 
 <div class="card border-[2px] border-[#d2691e] bg-[#faebd7] p-[20px] mb-[100px]">
-	<form method="POST">
+	<form method="POST" use:enhance>
 		<div class="mb-[20px]">
 			<div class="flex flex-col gap-[20px] max-w-[300px] text-center">
 				<p class="text-xl font-bold">Types</p>

@@ -1,7 +1,6 @@
 import type { Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 import { zod } from 'sveltekit-superforms/adapters';
-import { fail } from "@sveltejs/kit"
 import { pokemonTypesIcons } from '$lib/data/pokemonTypesIcons';
 import { superValidate } from 'sveltekit-superforms';
 
@@ -18,8 +17,8 @@ function createSchema (typeData) {
 
 const schema = createSchema(pokemonTypesIcons);
 
-export const load = async (event) => {
-	const form = await superValidate(event, zod(schema))
+export const load = async () => {
+	const form = await superValidate(zod(schema));
 	return {
 		form
 	}
@@ -27,8 +26,7 @@ export const load = async (event) => {
 
 export const actions = {
 	default: async (event) => {
-		const form = await superValidate(event, zod(schema))
-
-		return { form }
+		const form = await superValidate(event, zod(schema));
+		return { form };
 	}
 } satisfies Actions;
