@@ -1,14 +1,34 @@
 export async function load({url, fetch, data}) {
 
+    type PokemonTypeField = {
+        slot: number,
+        type: {
+            name: string,
+            url: string
+        }
+    }
+
     const currentPage = Number(url.searchParams.get('page'));
+
+    const currentPokemonTypes = url.searchParams.get('types') ? url.searchParams.get('types').split(',') : [];
 
     const offset: number = ((currentPage) - 1) * 9 || 0;
 
     async function getPokemons(offset: number) {
+
         const allPokemons = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=9&offset=${offset}`);
+
+        const allPokemonsByType = await Promise.all(
+            currentPokemonTypes.map(async(pokemonType) => {
+                const allPokemonsByTypeInfo = await fetch(`https://pokeapi.co/api/v2/type/${pokemonType}`);
+                return await allPokemonsByTypeInfo.json();
+            })
+        );
+
         if (!allPokemons.ok) {
             throw new Error("Failed to load pokemons");
         }
+
         const allPokemonsData = await allPokemons.json();
 
         const pokemonDetails = await Promise.all(
@@ -16,9 +36,9 @@ export async function load({url, fetch, data}) {
                 const pokemonInfo = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
                 const pokemonInfoData = await pokemonInfo.json();
 
-                const types: any = [];
+                const types: string[] = [];
 
-                pokemonInfoData.types.forEach((type) => {
+                pokemonInfoData.types.forEach((type: PokemonTypeField) => {
                     types.push(type.type.name);
                 })
 
@@ -30,6 +50,9 @@ export async function load({url, fetch, data}) {
                 };
             })
         );
+
+
+
         return {
             count: allPokemonsData.count,
             pokemons: pokemonDetails,
@@ -38,7 +61,7 @@ export async function load({url, fetch, data}) {
 
     return {
         pokemonsData: getPokemons(offset),
-        form: data
+        form: data,
     };
 }
 

@@ -4,21 +4,31 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { pokemonTypesIcons } from '$lib/data/pokemonTypesIcons';
 import { superValidate } from 'sveltekit-superforms';
 
-function createSchema (typeData) {
+function createSchema (typeData, searchParams) {
 	const typeFields = {};
 
+	const defaultValue = (type) => {
+		return searchParams.split(',').includes(type);
+	}
+
 	for (const type in typeData) {
-		typeFields[type] = z.boolean().default(false);
+		typeFields[type] = z.boolean().default(searchParams ? defaultValue(type) : false);
 	}
 
 	return z.object(typeFields);
 
 }
 
-const schema = createSchema(pokemonTypesIcons);
+const schema = (searchParams) => createSchema(pokemonTypesIcons, searchParams);
 
-export const load = async () => {
-	const form = await superValidate(zod(schema));
+
+export const load = async ({url}) => {
+	const searchParams = url.searchParams.get('types');
+
+	const formSchema = schema(searchParams);
+
+	const form = await superValidate(zod(formSchema));
+
 	return {
 		form
 	}
@@ -26,7 +36,12 @@ export const load = async () => {
 
 export const actions = {
 	default: async (event) => {
-		const form = await superValidate(event, zod(schema));
+		const searchParams = event.url.searchParams.get('types');
+
+		const formSchema = schema(searchParams);
+
+		const form = await superValidate(event, zod(formSchema));
+
 		return { form };
 	}
 } satisfies Actions;

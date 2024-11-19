@@ -14,7 +14,6 @@
 		<Tooltip
 				bind:open={hoverStatus}
 				positioning={{ placement: 'top' }}
-				triggerBase="underline"
 				contentBase="card"
 				openDelay={100}>
 				{#snippet trigger()}

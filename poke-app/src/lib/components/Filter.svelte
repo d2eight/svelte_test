@@ -1,19 +1,21 @@
 <script>
 	import { pokemonTypesIcons } from '$lib/data/pokemonTypesIcons';
 	import { superForm } from 'sveltekit-superforms';
+	import { page } from '$app/stores';
 
 	import PokemonTypeIcon from './PokemonTypeIcon.svelte';
-
 	import { goto } from '$app/navigation';
 
 	const { formData } = $props();
 
 	const { form, enhance } = superForm(formData.form, {
-		applyAction: true,
-		invalidateAll: true,
-		resetForm: true,
+		invalidateAll: false,
+		resetForm: false,
 		onResult({result}) {
 			if(result.type === "success") {
+
+				const url = new URL($page.url);
+
 				const requestedPokemonsTypes = [];
 
 				for (let key in result.data.form.data) {
@@ -21,13 +23,12 @@
 						requestedPokemonsTypes.push(key);
 					}
 				}
-				const searchParams = new URLSearchParams({
-					page: "1",
-					rofl: "2",
-					types: requestedPokemonsTypes.join(",")
-				});
 
-				goto(`/all-pokemons?${searchParams.toString()}`);
+				requestedPokemonsTypes.length
+					? url.searchParams.set('types', `${requestedPokemonsTypes.join(',')}`)
+					: url.searchParams.delete('types');
+
+				return goto(url.toString());
 
 			}
 		}
