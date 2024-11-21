@@ -4,19 +4,32 @@
 
     import { Pagination } from '@skeletonlabs/skeleton-svelte';
 
-    const pokemonsCount = $props();
+    let { pokemonsCount } = $props();
 
-    const currentPage = Number($page.url.searchParams.get('page')) || 1;
+    let url = $derived(new URL($page.url));
+
+    let currentPage = $state(Number(url.searchParams.get('page')) || 1);
 
     const pageSize = 9;
 
     function handlePageChange(newPage: any) {
-        goto(`?page=${newPage.page}`);
+        url.searchParams.set('page', newPage.page);
+        currentPage = newPage.page;
+        return goto(url.toString());
     }
 
     const sourceData = [1]
+
+    $effect(() => {
+		  const url = new URL($page.url);
+      const currentPage = Number(url.searchParams.get('page'));
+      if(currentPage === 1) {
+          handlePageChange({page: currentPage})
+      }
+    })
+
 </script>
 
-<div class="pagination">
-    <Pagination onPageChange={handlePageChange} count={1302} data={sourceData} page={currentPage} pageSize={pageSize} />
+<div class="text-center mb-[50px]">
+    <Pagination onPageChange={handlePageChange} count={pokemonsCount} data={sourceData} page={currentPage} pageSize={pageSize} />
 </div>

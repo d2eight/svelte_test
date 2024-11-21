@@ -8,18 +8,24 @@
 
 	const { formData } = $props();
 
-	const { form, enhance } = superForm(formData.form, {
+	const { form, enhance, isTainted } = superForm(formData.form, {
 		invalidateAll: false,
 		resetForm: false,
+		onSubmit({cancel}) {
+			if(!isTainted()) {
+				cancel();
+			}
+		},
 		onResult({result}) {
 			if(result.type === "success") {
+				const currentFormData = result.data.form.data;
 
 				const url = new URL($page.url);
 
 				const requestedPokemonsTypes = [];
 
-				for (let key in result.data.form.data) {
-					if ((result.data.form.data[key])) {
+				for (let key in currentFormData) {
+					if ((currentFormData[key])) {
 						requestedPokemonsTypes.push(key);
 					}
 				}
@@ -27,6 +33,8 @@
 				requestedPokemonsTypes.length
 					? url.searchParams.set('types', `${requestedPokemonsTypes.join(',')}`)
 					: url.searchParams.delete('types');
+
+				url.searchParams.set('page', '1');
 
 				return goto(url.toString());
 
@@ -36,7 +44,7 @@
 
 </script>
 
-<div class="card border-[2px] border-[#d2691e] bg-[#faebd7] p-[20px] mb-[100px]">
+<div class="card border-[2px] border-[#d2691e] bg-[#faebd7] p-[20px] mb-[50px]">
 	<form method="POST" use:enhance>
 		<div class="mb-[20px]">
 			<div class="flex flex-col gap-[20px] max-w-[300px] text-center">

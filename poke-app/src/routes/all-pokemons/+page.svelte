@@ -15,6 +15,9 @@
             <ProgressRing value={null} size="size-14" meterStroke="stroke-warning-600"/>
         </div>
     {:then pokemonsData}
+        <div>
+            <Pagination pokemonsCount={pokemonsData.count} />
+        </div>
         <ul class="flex flex-wrap justify-center gap-[50px]">
             {#each pokemonsData.pokemons as pokemon}
                 <li>
@@ -27,8 +30,5 @@
     {:catch error}
         <p>Failed</p>
     {/await}
-    <div class="">
-        <Pagination />
-    </div>
 </div>
 
