@@ -11,10 +11,11 @@
 	const { form, enhance, isTainted } = superForm(formData.form, {
 		invalidateAll: false,
 		resetForm: false,
+		dataType: "json",
 		onSubmit({cancel}) {
-			if(!isTainted()) {
-				cancel();
-			}
+			// if(!isTainted()) {
+			// 	cancel();
+			// }
 		},
 		onResult({result}) {
 			if(result.type === "success") {
@@ -24,8 +25,8 @@
 
 				const requestedPokemonsTypes = [];
 
-				for (let key in currentFormData) {
-					if ((currentFormData[key])) {
+				for (let key in currentFormData.typeFields) {
+					if ((currentFormData.typeFields[key])) {
 						requestedPokemonsTypes.push(key);
 					}
 				}
@@ -33,6 +34,10 @@
 				requestedPokemonsTypes.length
 					? url.searchParams.set('types', `${requestedPokemonsTypes.join(',')}`)
 					: url.searchParams.delete('types');
+
+				currentFormData.sex !== ''
+					? url.searchParams.set('sex', currentFormData.sex)
+					: url.searchParams.delete('sex')
 
 				url.searchParams.set('page', '1');
 
@@ -42,24 +47,35 @@
 		}
 	});
 
+	const sex = ['', 'male', 'female'];
+
 </script>
 
 <div class="card border-[2px] border-[#d2691e] bg-[#faebd7] p-[20px] mb-[50px]">
 	<form method="POST" use:enhance>
 		<div class="mb-[20px]">
-			<div class="flex flex-col gap-[20px] max-w-[300px] text-center">
-				<p class="text-xl font-bold">Types</p>
-				<div class="flex flex-wrap justify-center gap-[30px]">
-					{#each Object.entries($form) as [type, value]}
-						<label class="flex items-center space-x-2">
-							<input class="checkbox" type="checkbox" name={type} bind:checked={$form[type]}/>
-							<PokemonTypeIcon name={type} icon={pokemonTypesIcons[type].icon} color={pokemonTypesIcons[type].color} />
-						</label>
-					{/each}
+			<div class="flex gap-[20px] text-center">
+				<div class="flex flex-col gap-[20px]">
+					<p class="text-xl font-bold">Types</p>
+					<div class="flex flex-wrap justify-center gap-[30px]">
+						{#each Object.entries($form.typeFields) as [type, value]}
+							<label class="flex items-center space-x-2">
+								<input class="checkbox" type="checkbox" name={type} bind:checked={$form.typeFields[type]}/>
+								<PokemonTypeIcon name={type} icon={pokemonTypesIcons[type].icon} color={pokemonTypesIcons[type].color} />
+							</label>
+						{/each}
+					</div>
+				</div>
+				<div class="flex flex-col gap-[20px] w-full">
+					<p class="text-xl font-bold">Sex</p>
+					<select id="sex" name="sex" class="select" bind:value={$form.sex}>
+						{#each sex as sexOption}
+							<option value={sexOption}>{sexOption}</option>
+						{/each}
+					</select>
 				</div>
 			</div>
 		</div>
 		<button class="w-full btn preset-filled-warning-500">Search</button>
 	</form>
 </div>
-

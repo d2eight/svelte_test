@@ -8,14 +8,17 @@ function createSchema (typeData, searchParams) {
 	const typeFields = {};
 
 	const defaultValue = (type) => {
-		return searchParams.split(',').includes(type);
+		return searchParams.types.split(',').includes(type);
 	}
 
 	for (const type in typeData) {
-		typeFields[type] = z.boolean().default(searchParams ? defaultValue(type) : false);
+		typeFields[type] = z.boolean().default(searchParams.types ? defaultValue(type) : false);
 	}
 
-	return z.object(typeFields);
+	return z.object({
+		typeFields: z.object(typeFields),
+		sex: z.string('').default('')
+	});
 
 }
 
@@ -23,7 +26,10 @@ const schema = (searchParams) => createSchema(pokemonTypesIcons, searchParams);
 
 
 export const load = async ({url}) => {
-	const searchParams = url.searchParams.get('types');
+	const searchParams = {
+		types: url.searchParams.get('types'),
+		sex: url.searchParams.get('sex')
+	};
 
 	const formSchema = schema(searchParams);
 
@@ -36,7 +42,11 @@ export const load = async ({url}) => {
 
 export const actions = {
 	default: async (event) => {
-		const searchParams = event.url.searchParams.get('types');
+
+		const searchParams = {
+			types: event.url.searchParams.get('types'),
+			sex: event.url.searchParams.get('sex')
+		};
 
 		const formSchema = schema(searchParams);
 

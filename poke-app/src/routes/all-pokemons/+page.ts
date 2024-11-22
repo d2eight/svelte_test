@@ -10,7 +10,8 @@ export async function load({url, fetch, data}) {
 
     const currentPage = Number(url.searchParams.get('page'));
 
-    const currentPokemonTypes = url.searchParams.get('types') ? url.searchParams.get('types').split(',') : [];
+    const currentPokemonTypes = url.searchParams.get('types') ? url.searchParams.get('types')?.split(',') : [];
+    const currentPokemonSex = url.searchParams.get('sex') ? url.searchParams.get('sex')?.split(',') : [];
 
     const offset: number = ((currentPage) - 1) * 9 || 0;
 
@@ -27,9 +28,22 @@ export async function load({url, fetch, data}) {
                         });
                     })
                 );
+
+                const allPokemonsByTypeFiltered = allPokemonsByType.flat().reduce((acc, pokemon) => {
+                    const duplicateIndex = acc.findIndex(existingPokemon => JSON.stringify(existingPokemon) === JSON.stringify(pokemon));
+
+                    if (duplicateIndex !== -1) {
+                        const duplicatedPokemon = acc.splice(duplicateIndex, 1)[0];
+                        acc.unshift(duplicatedPokemon)
+                    } else {
+                        acc.push(pokemon);
+                    }
+                    return acc;
+                }, [])
+
                 return {
-                    pokemons: allPokemonsByType.flat().slice(offset, offset + 9),
-                    count: allPokemonsByType.flat().length
+                    pokemons: allPokemonsByTypeFiltered.slice(offset, offset + 9),
+                    count: allPokemonsByTypeFiltered.length,
                 };
             } else {
                 const allPokemons = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=9&offset=${offset}`)

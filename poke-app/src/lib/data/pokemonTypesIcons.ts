@@ -17,6 +17,7 @@ import {
 	Snowflake,
 	Moon,
 	Sparkles,
+	Origami
 } from 'lucide-svelte';
 
 export const pokemonTypesIcons = {
@@ -42,7 +43,7 @@ export const pokemonTypesIcons = {
 	},
 	rock: {
 		icon: Mountain,
-		color: '#3c477c'
+		color: '#91a3b0'
 	},
 	bug: {
 		icon: Bug,
@@ -80,16 +81,16 @@ export const pokemonTypesIcons = {
 		icon: Snowflake,
 		color: '#20c3d0'
 	},
+	dragon: {
+		icon: Origami,
+		color: '#6b0606'
+	},
 	dark: {
 		icon: Moon,
-		color: '#91a3b0'
+		color: '#3c477c'
 	},
 	fairy: {
 		icon: Wand,
 		color: '#f259ff'
-	},
-	stellar: {
-		icon: Sparkles,
-		color: '#ffd250'
 	}
 }
