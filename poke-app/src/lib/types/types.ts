@@ -6,6 +6,11 @@ export type PokemonCard = {
     pokemonTypes: []
 }
 
+export type PokemonInfo = {
+    name: string,
+    url: string
+}
+
 export type PokemonIconData = {
     name: string;
     icon: typeof LucideIcon;

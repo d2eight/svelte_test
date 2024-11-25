@@ -16,7 +16,6 @@ import {
 	Brain,
 	Snowflake,
 	Moon,
-	Sparkles,
 	Origami
 } from 'lucide-svelte';
 
@@ -93,4 +92,4 @@ export const pokemonTypesIcons = {
 		icon: Wand,
 		color: '#f259ff'
 	}
-}
+};

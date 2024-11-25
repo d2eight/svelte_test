@@ -12,6 +12,7 @@
             label: "Find pokemon"
         }
     ]
+
 </script>
 
 <div class="home-page">
