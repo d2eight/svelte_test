@@ -7,6 +7,22 @@
 
     const { data } = $props();
 
+    import { QueryCache } from '@tanstack/svelte-query';
+
+    const queryCache = new QueryCache({
+        onError: (error) => {
+            console.log(error)
+        },
+        onSuccess: (data) => {
+            console.log(data)
+        },
+        onSettled: (data, error) => {
+            console.log(data, error)
+        },
+    })
+
+    console.log(queryCache.findAll());
+
 </script>
 <div class="h-[100vh] relative max-w-[1200px] p-[50px] m-auto">
     <Filter formData={data.form} />
@@ -22,7 +38,7 @@
             {#each pokemonsData.pokemons as pokemon}
                 <li>
                     <a class="" href={`/all-pokemons/${pokemon.name}`} data-sveltekit-preload-data="tap">
-                        <PokemonCard name={pokemon.name} image={pokemon.image} pokemonTypes={pokemon.types} />
+                        <PokemonCard name={pokemon.name} image={pokemon.image} pokemonTypes={pokemon.pokemonTypes} />
                     </a>
                 </li>
             {/each}

@@ -1,35 +1,38 @@
 import type { Actions } from '@sveltejs/kit';
-import { z } from 'zod';
+import { z, ZodDefault } from 'zod';
 import { zod } from 'sveltekit-superforms/adapters';
 import { pokemonTypesIcons } from '$lib/data/pokemonTypesIcons';
 import { superValidate } from 'sveltekit-superforms';
 
-function createSchema(typeData, searchParams) {
-	const typeFields = {};
+import type { PokemonIconDataObjType } from '$lib/types/types';
 
-	const defaultValue = (type) => {
-		return searchParams.types.split(',').includes(type);
-	};
+type searchParams = {
+	types: string[];
+	sex: string;
+};
+
+type pokemonTypeFormFields = Record<string, ZodDefault<z.ZodBoolean>>;
+
+function createSchema(typeData: PokemonIconDataObjType, searchParams: searchParams) {
+	const typeFields: pokemonTypeFormFields = {};
 
 	for (const type in typeData) {
-		typeFields[type] = z.boolean().default(searchParams.types ? defaultValue(type) : false);
+		typeFields[type] = z.boolean().default(searchParams.types.includes(type));
 	}
 
 	return z.object({
 		typeFields: z.object(typeFields),
-		sex: z.string('').default(searchParams.sex ? searchParams.sex : '')
+		sex: z.string().default(searchParams.sex ? searchParams.sex : '')
 	});
 }
 
-const schema = (searchParams) => createSchema(pokemonTypesIcons, searchParams);
+const schema = (searchParams: searchParams) => createSchema(pokemonTypesIcons, searchParams);
 
 export const load = async ({ url }) => {
-	const searchParams = {
-		types: url.searchParams.get('types'),
-		sex: url.searchParams.get('sex')
+	const searchParams: searchParams = {
+		types: url.searchParams.get('types')?.split(',') || [],
+		sex: url.searchParams.get('sex') || ''
 	};
-
-	console.log(searchParams);
 
 	const formSchema = schema(searchParams);
 
@@ -42,9 +45,9 @@ export const load = async ({ url }) => {
 
 export const actions = {
 	default: async (event) => {
-		const searchParams = {
-			types: event.url.searchParams.get('types'),
-			sex: event.url.searchParams.get('sex')
+		const searchParams: searchParams = {
+			types: event.url.searchParams.get('types')?.split(',') || [],
+			sex: event.url.searchParams.get('sex') || ''
 		};
 
 		const formSchema = schema(searchParams);

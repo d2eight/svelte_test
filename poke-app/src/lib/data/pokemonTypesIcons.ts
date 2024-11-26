@@ -19,7 +19,9 @@ import {
 	Origami
 } from 'lucide-svelte';
 
-export const pokemonTypesIcons = {
+import type { PokemonIconDataObjType } from '$lib/types/types';
+
+export const pokemonTypesIcons: PokemonIconDataObjType = {
 	normal: {
 		icon: Smile,
 		color: '#000000'
